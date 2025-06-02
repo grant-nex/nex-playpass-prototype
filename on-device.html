@@ -380,12 +380,26 @@
     document.addEventListener('DOMContentLoaded', function() {
       const recurringSwitch = document.getElementById('recurringSwitch');
       const switchLabel = document.getElementById('switchLabel');
+      // Find the card-desc elements for 12-Month and 3-Month
+      let desc12 = null, desc3 = null;
+      document.querySelectorAll('.card').forEach(card => {
+        const title = card.querySelector('.card-title');
+        const desc = card.querySelector('.card-desc');
+        if (title && desc) {
+          if (title.textContent.includes('12-Month')) desc12 = desc;
+          if (title.textContent.includes('3-Month')) desc3 = desc;
+        }
+      });
       function updateLabel() {
         switchLabel.textContent = recurringSwitch.checked ? 'Recurring enabled' : 'Recurring disabled';
         if (!recurringSwitch.checked) {
           switchLabel.classList.add('grey');
+          if (desc12) desc12.innerHTML = 'Unlimited Access.<br>One-Time purchase.';
+          if (desc3) desc3.innerHTML = 'Unlimited Access.<br>One-Time purchase.';
         } else {
           switchLabel.classList.remove('grey');
+          if (desc12) desc12.innerHTML = 'Unlimited Access.<br>Auto-renews every year.';
+          if (desc3) desc3.innerHTML = 'Unlimited Access.<br>Auto-renews every 3 months.';
         }
       }
       recurringSwitch.addEventListener('change', updateLabel);
