@@ -94,6 +94,7 @@
       margin-bottom: 44px;
     }
     .card {
+      border: 2.5px solid var(--background) !important;
       background: var(--card-background);
       border-radius: 22px;
       box-shadow: var(--shadow-normal);
@@ -102,17 +103,12 @@
       display: flex;
       flex-direction: row;
       align-items: flex-start;
-      transition: box-shadow 0.2s;
+      transition: box-shadow 0.2s, border 0.2s;
     }
-    .card.popular {
-      border: 2.5px solid var(--border-color);
+    .card.selected {
+      border: 2.5px solid var(--border-color) !important;
       box-shadow: var(--shadow-popular);
-      z-index: 2;
-    }
-    .card:not(.popular) {
-      background: #fff;
-      border: none;
-      box-shadow: var(--shadow-normal);
+      z-index: 3;
     }
     .card-inner {
       display: flex;
@@ -422,6 +418,14 @@
         font-size: 0.8rem;
         padding: 8px 16px;
       }
+      .card {
+        padding: 36px 24px;
+      }
+
+      .card-desc {
+        font-size: 1.1rem;
+        line-height: 0.9;
+      }
     }
   </style>
 </head>
@@ -479,6 +483,27 @@
       const toggleSwitch = document.getElementById('toggleSwitch');
       const desc12 = document.getElementById('desc-12');
       const desc3 = document.getElementById('desc-3');
+      // Card selection logic
+      let card12 = null, card3 = null;
+      document.querySelectorAll('.card').forEach(card => {
+        const title = card.querySelector('.card-title');
+        if (title) {
+          if (title.textContent.includes('12-Month')) card12 = card;
+          if (title.textContent.includes('3-Month')) card3 = card;
+        }
+      });
+      function selectCard(card) {
+        if (card12) card12.classList.remove('selected');
+        if (card3) card3.classList.remove('selected');
+        card.classList.add('selected');
+      }
+      if (card12) {
+        card12.addEventListener('click', function() { selectCard(card12); });
+      }
+      if (card3) {
+        card3.addEventListener('click', function() { selectCard(card3); });
+      }
+      if (card12) selectCard(card12);
       function setMode(mode) {
         if (mode === 'recurring') {
           btnRecurring.classList.add('active');
