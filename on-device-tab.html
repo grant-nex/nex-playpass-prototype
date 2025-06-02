@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Play Pass Selection</title>
+  <style>
+    /* === Font Face === */
+    @font-face {
+      font-family: 'Noka';
+      src: url('Noka-Bold-e673b02d.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+    html, body, *, *:before, *:after {
+      font-family: 'Noka', sans-serif !important;
+    }
+
+    /* === CSS Variables === */
+    :root {
+      --primary-color: #1A2AFF;
+      --button-blue: #1A2AFF;
+      --text-primary: #000;
+      --text-secondary: #A3A3A3;
+      --background: #FCFCF7;
+      --card-background: #fff;
+      --border-color: #1A2AFF;
+      --shadow-popular: 0 4px 24px 0 rgba(26,42,255,0.10);
+      --shadow-normal: 0 2px 12px 0 rgba(0,0,0,0.04);
+      --badge-teal: #1DE9B6;
+    }
+
+    /* === Layout === */
+    body {
+      background: var(--background);
+      color: var(--text-primary);
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* === Logo & Images === */
+    .logo {
+      display: block;
+      width: 82px;
+      height: auto;
+    }
+    .play-pass-image {
+      display: block;
+      padding: 36px 16px;
+      width: 120px;
+      height: auto;
+    }
+
+    /* === Typography === */
+    .headline {
+      text-align: center;
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 56px;
+      line-height: 1.1;
+      max-width: 340px;
+    }
+    .terms {
+      text-align: center;
+      font-size: 1rem;
+      color: #000;
+      margin-top: 32px;
+      font-weight: bold;
+      letter-spacing: 0.01em;
+    }
+    .terms a {
+      color: var(--button-blue);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .terms a:hover {
+      text-decoration: underline;
+    }
+
+    /* === Cards === */
+    .cards {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 44px;
+    }
+    .card {
+      background: var(--card-background);
+      border-radius: 22px;
+      box-shadow: var(--shadow-normal);
+      padding: 48px 24px;
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      transition: box-shadow 0.2s;
+    }
+    .card.popular {
+      border: 2.5px solid var(--border-color);
+      box-shadow: var(--shadow-popular);
+      z-index: 2;
+    }
+    .card:not(.popular) {
+      background: #fff;
+      border: none;
+      box-shadow: var(--shadow-normal);
+    }
+    .card-inner {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .card-title {
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-bottom: 2px;
+      color: #000;
+      text-align: left;
+    }
+    .card-desc {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      font-weight: bold;
+      margin-bottom: 0;
+      margin-top: 0;
+      text-align: left;
+    }
+    .card-price {
+      font-size: 3.6rem;
+      font-weight: bold;
+      color: #000;
+      margin-left: auto;
+      margin-top: 0;
+      margin-right: 0;
+      align-self: flex-start;
+      letter-spacing: -1px;
+      display: flex;
+      align-items: flex-start;
+      height: auto;
+    }
+
+    /* === Badge & Most Popular === */
+    .badge {
+      position: absolute;
+      left: -18px;
+      top: -44px;
+      background: var(--badge-teal);
+      color: #000;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+      line-height: 1.1;
+      transform: rotate(-16deg);
+    }
+    .badge-save {
+      font-size: 17px;
+      font-weight: bold;
+      display: block;
+    }
+    .badge-percent {
+      font-size: 28px;
+    }
+    .most-popular {
+      position: absolute;
+      right: 50px;
+      top: -38px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #000;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      z-index: 3;
+    }
+    .arrow-abs {
+      position: absolute;
+      top: 18px;
+      right: -38px;
+      width: 38px;
+      height: 38px;
+      display: block;
+    }
+
+    /* === Buy Button === */
+    .buy-btn {
+      display: inline-block;
+      width: auto;
+      background: none;
+      color: var(--button-blue);
+      border: none;
+      font-size: 27px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      outline: none;
+      letter-spacing: 0.01em;
+    }
+    .buy-btn::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -12px;
+      width: 110px;
+      height: 8px;
+      background: url(underline-6ee03e85.svg) repeat-x;
+    }
+    .cards + .buy-btn {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* === Tab Control === */
+    .tab-switch {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 32px;
+      gap: 0;
+      width: 320px;
+      background: #F0F0F0;
+      border-radius: 24px;
+      position: relative;
+      height: 48px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: none;
+      font-size: 18px;
+      font-weight: bold;
+      color: #A3A3A3;
+      padding: 12px 0;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      outline: none;
+      z-index: 1;
+    }
+    .tab-btn.active {
+      background: var(--primary-color);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    /* === Responsive: 1024px === */
+    @media (max-width: 1024px) {
+      .tab-btn {
+        font-size: 1rem;
+      }
+    }
+
+    /* === Responsive: 767px === */
+    @media (max-width: 767px) {
+      .tab-btn {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* === Responsive: 480px === */
+    @media (max-width: 480px) {
+      .tab-btn {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="headerLogo-df52bd65.png" alt="Logo" class="logo">
+    <img src="playPass-af8f3fb4.png" alt="Play Pass" class="play-pass-image">
+    <div class="headline">
+      Unlock the full unlimited library and<br>get new game drops every month.
+    </div>
+    <div class="tab-switch" id="tabSwitch">
+      <button class="tab-btn active" data-mode="recurring" id="tab-recurring">Recurring</button>
+      <button class="tab-btn" data-mode="onetime" id="tab-onetime">One-Time</button>
+    </div>
+    <div class="cards">
+      <div class="card popular">
+        <div class="badge"><span class="badge-save">Save</span><span class="badge-percent">55%</span></div>
+        <div class="most-popular">
+          Most popular!
+          <img class="arrow-abs MuiBox-root css-lx0vc9" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEwAAABOCAYAAACKX/AgAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAPTSURBVHgB7ZxLbIxRFMf/KG3VO56JUiISCwRdeCRekdiQSIjHwgKRWFRsLEikFhIbIlKPlYUKFrWSJhXRIARBGs8EEZTWM7QeQVuPOme+dtIxc++dqXFm7jfnl/zTTM5NM/Of+zz3fAMoKdELMiwg7SatJA0g1ZNaoCRkFukrqb2LmkhlpB5Q4qhErFld9Yy0HkoMJ2A2rFM1pBIoEZaRfsFtWiNpE7IciUn/YcffuaSelna8GCwhFZCukn4ix+HJn+es9iR0gzQGCopJx5Ccac9J46BEKCf9QHKmjYcSYTaSG6L1UNOiDCfVwW0aG1sCJcIgUhXcpj0iDYQSIY90GG7TKqFE4T3aEbhNWw0lSj6pFnbDGkiDoUQZisAUm2nlUGIoJbXBbNhnBCusOFIJxFR5heC9zTfEeehyLu0clCi83bANzWZSEYTJ1h7GdKawFxvinNV4TLoNJQr3IO5Jpl52AUocR2FfMUdBkJ7Ifqoc8RVQYigkfYG5h1VDieMSzIa1kvpDCB+GJHPdEuuDIP0tgi+G3XHEp0OIMPQwZhKUGPiL/QDzPHYNShy2iZ8vVERGiy9DkmmwxDhjWwwBfDLspSPeDwL4ZNgLR3wCBPDJsPeO+BAI4JNhrorFAgjgk2FvHfF8COCTYa4e1AoBfDLsuyNeCAF8MqyvI94EAXwyTPzCIxE+GeYqRGmEAD4Z5irhdM1xacEnw1w33a8hgE+GTbbEfkOHZByjLTE+Z7ZBAF8M4xVyoiX+FEL4YlipI34LQuQhc0whbex4D3ywPk26aGg7A3bqEHK4aO4T4lPN+wztq2EvF5iGkLMI5g+/5a+2fCR6A3txXeifu1wIswEfEZsMnAl77zoDQTI16TdbYnwEKuvyeh3s1CIH4Ov9uzD3mncI8l/8hT6BvYcleqyGtyHLSQdIu0hjEQKWwm4ElzHNc7S5j9j5i8vRtyGoke3ajrO1JfAcTiknWik7dYp0HHbDdnT8r2GkCgTzn6ltBUIAP3lr+oBcE9YCu2FzSHsQZCraHapBGsjkxpW5B3Opkutiln/a4SySTyw2Iw1k+mh0Gd2nCKllYUPxYBdnINoFtB8hgSd+W1l5OnQQITsJXMH/MYq3EmsRQnhzmU6jOPt6iDQCIYV7QbrMuokcyFzw5UYyPzVjE2+At5J6I0fgB6y6a9Z5hOSsmArbkbpRfK22BjkKp6BTMYt3+CI1rdkM1+K7jPpG2ozMH+myglUItgQmsx6QpkKJwrvxnYhfMfn1XgiVZLrIxiMD/zDbBtJIBBe0J/Fvh3RFURRFUUT4Az5rOQZ92tsaAAAAAElFTkSuQmCC" alt="Most popular arrow">
+        </div>
+        <div class="card-inner">
+          <div class="card-content">
+            <div class="card-title">12-Month</div>
+            <div class="card-desc">Unlimited Access.<br>Auto-renews every year.</div>
+          </div>
+          <div class="card-price">$89</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-content">
+            <div class="card-title">3-Month</div>
+            <div class="card-desc">Unlimited Access.<br>Auto-renews every 3 months.</div>
+          </div>
+          <div class="card-price">$49</div>
+        </div>
+      </div>
+    </div>
+    <button class="buy-btn">
+      Buy now
+    </button>
+    <div class="terms">
+      By tapping Buy Now,<br>
+      you agree to the following<br>
+      <a href="https://playground.nex.inc/policies/terms-of-service" target="_blank">Terms of Service</a> and <a href="https://playground.nex.inc/policies/privacy-policy" target="_blank">Privacy Policy</a>.
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const cards = document.querySelectorAll('.card');
+      let activeTab = 'recurring';
+
+      function showTab(tab) {
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        cards.forEach(card => card.classList.add('hidden'));
+        document.querySelector(`.card[data-mode="${tab}"]`).classList.remove('hidden');
+        document.querySelector(`.tab-btn[data-mode="${tab}"]`).classList.add('active');
+      }
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeTab = btn.getAttribute('data-mode');
+          showTab(activeTab);
+        });
+      });
+
+      showTab(activeTab);
+    });
+  </script>
+</body>
+</html>
